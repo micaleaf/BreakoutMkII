@@ -48,7 +48,7 @@ class Menu(States, MenuManager):
 
         # Background Image on Start Screen
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "..", "Images", "BG.jpg"))
+        image_path = os.path.abspath(os.path.join(base_path, "..", "Images", "BackGround.jpg"))
 
         try:
             self.background = pg.image.load(image_path).convert()
