@@ -114,7 +114,7 @@ class Game(States):
         self.ball = Ball((255, 0, 0), radius=10, speed=5, sounds=self.sounds)
         self.all_sprites.add(self.ball)
 
-        self.paddle = Paddle((0, 0, 0), paddle_width, paddle_height)
+        self.paddle = Paddle((0, 255, 255), paddle_width, paddle_height)
         self.paddle.rect.x = (WINDOW_WIDTH - paddle_width) // 2
         self.paddle.rect.y = WINDOW_HEIGHT - 80
 
