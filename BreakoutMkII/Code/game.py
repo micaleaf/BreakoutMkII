@@ -43,7 +43,7 @@ class Game(States):
         self.won = False  # Track if the player won
 
         # Load Game Screen Background iImage
-        """Image was downloaded from I can change the image if anyone wants me to, I got it from here 
+        """Image was downloaded from: 
         https://www.freepik.com/free-vector/abstract-pixel-rain-background_6148356.htm#fromView=search&page=1&position=39&uuid=1c7b579c-f59d-46ec-be47-aae2a84ceb5a&query=Retro+Game+Background"""
         
         base_path = os.path.dirname(os.path.abspath(__file__))
