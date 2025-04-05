@@ -15,6 +15,7 @@ FPS = 60
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 WHITE = (255, 255, 255)
+CYAN = (0, 255, 255)
 
 paddle_width = WINDOW_WIDTH / 5
 paddle_height = WINDOW_HEIGHT / 45
@@ -45,7 +46,7 @@ class Paddle(pygame.sprite.Sprite):
         self.rect.x -= pixels
         if self.rect.x < wall_width:
             self.rect.x = wall_width
-paddle = Paddle(BLACK, paddle_width, paddle_height)
+paddle = Paddle(CYAN, paddle_width, paddle_height)
 paddle.rect.x = int((WINDOW_WIDTH - paddle_width) / 2)
 paddle.rect.y = WINDOW_HEIGHT - 80
 
