@@ -1,0 +1,18 @@
+# Color Constants
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+FONT = "calibri"
+FONT_SIZE = 50
+LINE_SPACING = int(FONT_SIZE / 2)
+
+# Game Settings
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 900
+
+SETTINGS = {
+    'SIZE': (1000, 900),
+    'FPS': 60
+}
+STARTING_LIVES = 3
