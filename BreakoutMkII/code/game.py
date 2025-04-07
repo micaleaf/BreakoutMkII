@@ -47,7 +47,7 @@ class Game(States):
         https://www.freepik.com/free-vector/abstract-pixel-rain-background_6148356.htm#fromView=search&page=1&position=39&uuid=1c7b579c-f59d-46ec-be47-aae2a84ceb5a&query=Retro+Game+Background"""
         
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "..", "Images", "BackGround.jpg"))
+        image_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "BackGround.jpg"))
         try:
             print("Loading game background image from:", image_path)
             self.background = pg.image.load(image_path).convert()

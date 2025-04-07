@@ -27,6 +27,7 @@ def main():
     - menu: The main menu interface
     - game: The core gameplay state
     - end: The game over/end screen state
+    - help:
 
     Usage:
         Called automatically when the script is run directly.

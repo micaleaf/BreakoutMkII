@@ -2,19 +2,16 @@ import pygame
 import random
 
 pygame.init()
-from constants import WINDOW_HEIGHT, WINDOW_WIDTH
+from constants import WINDOW_HEIGHT, WINDOW_WIDTH, BLACK, GRAY, WHITE, SETTINGS
 
 window_size = (WINDOW_WIDTH, WINDOW_HEIGHT)
 
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Group 3 Breakout Game")
 clock = pygame.time.Clock()
-FPS = 60
+FPS = SETTINGS['FPS']
 
 # Colors
-BLACK = (0, 0, 0)
-GRAY = (200, 200, 200)
-WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)
 
 paddle_width = WINDOW_WIDTH / 5
