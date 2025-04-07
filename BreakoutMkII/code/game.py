@@ -151,7 +151,6 @@ class Game(States):
 
             elif event.key == pg.K_ESCAPE:
                 self.game_stats['lives'] = 0
-                self.game_stats['score'] += 500
                 self.done = True
                 self.sounds['game_over'].play()
 
