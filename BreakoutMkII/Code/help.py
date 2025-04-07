@@ -18,6 +18,9 @@ class Help(States, MenuManager):
         self.spacer = LINE_SPACING * 2
         self.pre_render_options()
         self.next = 'menu'
+        #Background Image
+        self.background = pg.image.load("images/blurredBG.png").convert()
+        self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     def startup(self, persist=None):
         print("Starting Help Screen")
