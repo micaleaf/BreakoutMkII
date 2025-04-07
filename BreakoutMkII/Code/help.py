@@ -44,14 +44,17 @@ class Help(States, MenuManager):
         # Help instructions
         lines = [
             "Use LEFT and RIGHT arrows to move the paddle",
-            "The ball bounces about autonomously.",
+            "The ball bounces about autonomously",
             "Try to keep it on-screen as long as possible",
             "Break all bricks to win the game (or press B)",
-            "Press Esc return to menu"
+            "Press Esc return to menu",
+            ""
         ]
 
         # Layout Configuration 
         start_y = 150
+        red = [0, 120, 30, 30]
+        blue = [0, 30, 30, 150]
         line_spacing = LINE_SPACING + 15
         text_offset = 20
         text_area_x = 100  # shift text right a little
@@ -71,6 +74,24 @@ class Help(States, MenuManager):
 
                 # Adjust text position to the right of the paddle
                 text_x = paddle_x + paddle_width + text_offset
+            elif i == 1:
+                pg.draw.circle(screen, (255, 0, 0), (text_area_x + 500, y + 11.5), 10)
+                text_x = text_area_x + text_offset
+            elif i == 2:
+                text_x = text_area_x + text_offset
+            elif i == 3:
+                pg.draw.rect(screen, (30, 30, 150), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
+            elif i == 4:
+                blend = (2) / max((4) - 1, 1)
+                r = int(blue[1] + (red[1] - blue[1]) * blend)
+                g = int(blue[2] + (red[2] - blue[2]) * blend)
+                b = int(blue[3] + (red[3] - blue[3]) * blend)
+                pg.draw.rect(screen, (r, g, b), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
+            elif i == 5:
+                pg.draw.rect(screen, (red[1], red[2], 30), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
             else:
                 # Align remaining lines with the same text_x
                 text_x = text_area_x + paddle_width + text_offset
@@ -89,4 +110,3 @@ class Help(States, MenuManager):
         Required by state management system.
         """
         return self.persist
-
