@@ -1,7 +1,8 @@
 import pygame as pg
-from states import States
+
+from config import WHITE, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE
 from menu_manager import MenuManager
-from constants import WHITE, LINE_SPACING, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH, FONT, FONT_SIZE
+from states import States
 
 
 class End(States, MenuManager):

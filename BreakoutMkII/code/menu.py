@@ -1,8 +1,10 @@
-import pygame as pg
 import os
-from states import States
+
+import pygame as pg
+
+from config import WHITE, LINE_SPACING, FONT, FONT_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
 from menu_manager import MenuManager
-from constants import WHITE, LINE_SPACING, BLACK, FONT, FONT_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
+from states import States
 
 
 class Menu(States, MenuManager):
@@ -40,7 +42,7 @@ class Menu(States, MenuManager):
         States.__init__(self)
         MenuManager.__init__(self)
         self.next = 'game'
-        self.options = ['Play','Help', 'Quit']
+        self.options = ['Play', 'Help', 'Quit']
         self.next_list = ['game', 'help']
         self.pre_render_options()
         self.from_bottom = 200
@@ -57,7 +59,6 @@ class Menu(States, MenuManager):
             print("Background image failed to load:", e)
             self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
             self.background.fill(WHITE)
-
 
     def cleanup(self):
         """
@@ -127,11 +128,11 @@ class Menu(States, MenuManager):
         title_font = pg.font.SysFont(FONT, FONT_SIZE + 40, bold=True)
 
         # Text Drop Shadow 
-        shadow = title_font.render("BREAKOUT", True, (100, 100, 100)) 
-        screen.blit(shadow, shadow.get_rect(center=(WINDOW_WIDTH // 2 + 3, 103))) 
+        shadow = title_font.render("BREAKOUT", True, (100, 100, 100))
+        screen.blit(shadow, shadow.get_rect(center=(WINDOW_WIDTH // 2 + 3, 103)))
 
         # Title Text Color and Position
-        title_text = title_font.render("BREAKOUT", True, (255, 100, 0)) 
+        title_text = title_font.render("BREAKOUT", True, (255, 100, 0))
         title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 100))
         screen.blit(title_text, title_text.get_rect(center=(WINDOW_WIDTH // 2, 100)))
         self.draw_menu(screen)

@@ -1,15 +1,17 @@
 import pygame as pg
+
+from config import SETTINGS
 from control import Control
-from constants import SETTINGS
-from menu import Menu
-from game import Game
 from end import End
+from game import Game
 from help import Help
+from menu import Menu
 
 """
 State Control is based on a design by metulburr from the Python forum:
     https://python-forum.io/thread-336-post-64464.html#pid64464
 """
+
 
 def main():
     """

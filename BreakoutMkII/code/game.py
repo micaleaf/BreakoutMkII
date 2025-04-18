@@ -1,92 +1,140 @@
-import pygame as pg
-import pygame.mixer
 import os
-pg.mixer.init()
-from states import States
-from constants import GRAY, WHITE, FONT, FONT_SIZE, LINE_SPACING, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
-from gameScreen import create_bricks, Brick, Paddle, paddle_width, paddle_height, Ball, Debris
+import random
 
-wall_width = 16
+import pygame as pg
+
+from config import (WHITE, GRAY, CYAN, WINDOW_WIDTH, WINDOW_HEIGHT,
+                    FONT, STARTING_LIVES)
+from objects import *
+from states import States
+
+# Constants
+PADDLE_WIDTH = WINDOW_WIDTH // 5
+PADDLE_HEIGHT = WINDOW_HEIGHT // 45
+BRICK_WIDTH = 60
+BRICK_HEIGHT = 15
+X_GAP = 10
+Y_GAP = 5
+WALL_WIDTH = 16
+
+
+def create_bricks(rows, columns):
+    """Create a brick wall with the specified rows and columns."""
+    total_inter_brick_gap = (columns - 1) * X_GAP
+    available_brick_width = WINDOW_WIDTH - (2 * WALL_WIDTH) - total_inter_brick_gap
+    brick_width = available_brick_width // columns
+    total_brick_group_width = (columns * brick_width) + total_inter_brick_gap
+    side_gap = (WINDOW_WIDTH - (2 * WALL_WIDTH) - total_brick_group_width) // 2
+
+    brick_group = pg.sprite.Group()
+    start_y = 100
+
+    # Predefined contrasting dark color pairs
+    color_pairs = [
+        ((120, 30, 30), (30, 30, 150)),  # red → blue
+        ((30, 120, 30), (140, 30, 140)),  # green → violet
+        ((80, 80, 180), (180, 120, 60)),  # blue → gold
+        ((60, 60, 60), (160, 0, 160)),  # gray → magenta
+    ]
+
+    # Pick one contrasting pair
+    start_rgb, end_rgb = random.choice(color_pairs)
+    start_color = pg.Color(*start_rgb)
+    end_color = pg.Color(*end_rgb)
+
+    for row in range(rows):
+        blend = row / max(rows - 1, 1)
+        r = int(start_color.r + (end_color.r - start_color.r) * blend)
+        g = int(start_color.g + (end_color.g - start_color.g) * blend)
+        b = int(start_color.b + (end_color.b - start_color.b) * blend)
+        row_color = (r, g, b)
+
+        for col in range(columns):
+            brick = Brick(row_color, brick_width, BRICK_HEIGHT)
+            brick.rect.x = WALL_WIDTH + side_gap + col * (brick_width + X_GAP)
+            brick.rect.y = start_y + row * (BRICK_HEIGHT + Y_GAP)
+            brick_group.add(brick)
+
+    return brick_group
 
 
 class Game(States):
-    """
-    Main game state class that handles gameplay logic and rendering.
-
-    This state represents the active gameplay screen where the core game interaction occurs.
-    It inherits from the base States class and implements game-specific behavior including:
-    - Game initialization and cleanup
-    - Event handling for game interactions
-    - Game statistics management (lives and score)
-    - Screen rendering and updates
-
-    Attributes:
-        Inherits all attributes from States class.
-        next (str): Automatically set to 'end' state for transition after gameplay.
-    """
+    """Main game state that handles the breakout gameplay."""
 
     def __init__(self):
-        """
-        Initialize the Game state with default values.
-
-        Sets up:
-        - Next state to transition to ('end')
-        - Initial game statistics (lives and score)
-        """
         States.__init__(self)
         self.next = 'end'
         self.game_stats['lives'] = STARTING_LIVES
         self.game_stats['score'] = 0
-        self.last_direction = None  # can be 'left', 'right', or None
-        self.persist = {}
+        self.last_direction = None
         self.ball_launched = False
-        self.won = False  # Track if the player won
+        self.won = False
+        self.persist = {}
 
-        # Load Game Screen Background iImage
-        """Image was downloaded from: 
-        https://www.freepik.com/free-vector/abstract-pixel-rain-background_6148356.htm#fromView=search&page=1&position=39&uuid=1c7b579c-f59d-46ec-be47-aae2a84ceb5a&query=Retro+Game+Background"""
-        
+        # Load background
+        self.background = self._load_background()
+
+        # Initialize sounds and sprites in startup()
+        self.sounds = None
+        self.all_sprites = None
+        self.particles = None
+        self.brick_wall = None
+        self.ball = None
+        self.paddle = None
+
+    def _load_background(self):
+        """Load and scale the background image."""
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "BackGround.jpg"))
+        image_path = os.path.join(base_path, "..", "assets", "images", "BackGround.jpg")
+
         try:
-            print("Loading game background image from:", image_path)
-            self.background = pg.image.load(image_path).convert()
-            self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
+            background = pg.image.load(image_path).convert()
+            return pg.transform.scale(background, (WINDOW_WIDTH, WINDOW_HEIGHT))
         except Exception as e:
-            print("Game background image failed to load:", e)
-            self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-            self.background.fill(WHITE)
+            print("Background image failed to load:", e)
+            background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+            background.fill(WHITE)
+            return background
 
     def cleanup(self):
-        """
-        Perform cleanup operations when leaving the Game state.
-
-        Currently prints a debug message but can be extended to handle:
-        - Releasing resources
-        - Saving temporary game data
-        - Resetting volatile game elements
-        """
-        print("Cleaning Up Game")
+        """Prepare data to persist between states."""
+        print("Cleaning up Game state")
         self.persist['score'] = self.game_stats['score']
-        self.persist['won'] = self.won  # Pass win status to End screen
+        self.persist['won'] = self.won
         return self.persist
 
     def startup(self, persist):
-        """
-        Perform initialization operations when entering the Game state.
+        """Initialize game objects and sounds."""
+        print("Starting Game state")
+        self.persist = persist if persist is not None else {}
 
-        Currently prints a debug message but can be extended to handle:
-        - Loading level data
-        - Initializing game objects
-        - Preparing audio/visual assets
-        """
-        print("Starting Up Game")
+        # Load sounds
+        self._load_sounds()
 
-        # Sounds
+        # Initialize sprite groups
+        self.all_sprites = pg.sprite.Group()
+        self.particles = pg.sprite.Group()
+
+        # Create game objects
+        self.brick_wall = create_bricks(5, 9)
+        self.all_sprites.add(self.brick_wall)
+
+        self.ball = Ball((255, 0, 0), radius=10, speed=5, sounds=self.sounds)
+        self.all_sprites.add(self.ball)
+
+        self.paddle = Paddle(CYAN, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.paddle.rect.x = (WINDOW_WIDTH - PADDLE_WIDTH) // 2
+        self.paddle.rect.y = WINDOW_HEIGHT - 80
+        self.all_sprites.add(self.paddle)
+
+        self.ball_launched = False
+        self.last_direction = None
+
+    def _load_sounds(self):
+        """Load all game sounds."""
         base_path = os.path.dirname(os.path.abspath(__file__))
         sound_path = lambda name: os.path.join(base_path, "..", "assets", "sounds", name)
 
-        # Load sounds
         self.sounds = {
             'brick': pg.mixer.Sound(sound_path("hit_brick.wav")),
             'paddle': pg.mixer.Sound(sound_path("hit_paddle.wav")),
@@ -96,208 +144,132 @@ class Game(States):
             'wall': pg.mixer.Sound(sound_path("wall.wav")),
         }
 
-        self.persist = persist if persist is not None else {}
-
-        self.all_sprites = pg.sprite.Group()
-
-        # animation
-        self.particles = pg.sprite.Group()
-
-        # Create the brick wall
-        self.brick_wall = create_bricks(5, 9)
-
-        # Add bricks to sprite group
-        for brick in self.brick_wall:
-            self.all_sprites.add(brick)
-
-        # ball
-        self.ball = Ball((255, 0, 0), radius=10, speed=5, sounds=self.sounds)
-        self.all_sprites.add(self.ball)
-
-        self.paddle = Paddle((0, 255, 255), paddle_width, paddle_height)
-        self.paddle.rect.x = (WINDOW_WIDTH - paddle_width) // 2
-        self.paddle.rect.y = WINDOW_HEIGHT - 80
-
-
-        self.ball_launched = False
-        self.last_direction = None
-
-        self.all_sprites.add(self.paddle)
-
     def get_event(self, event):
-        """
-    Handle incoming events for the Game state.
-
-    Args:
-        event (pygame.Event): The event to process.
-
-    Handles:
-    - Paddle movement direction
-    - Ball launch on first arrow key press
-    - ESC or mouse click to end game
-    """
-        if event.type == pg.KEYDOWN:
+        """Handle input events."""
+        if event.type == pg.QUIT:
+            self.quit = True
+        elif event.type == pg.KEYDOWN:
             if event.key == pg.K_LEFT:
                 self.last_direction = 'left'
                 if not self.ball_launched:
                     self.ball.launch()
                     self.ball_launched = True
-
             elif event.key == pg.K_RIGHT:
                 self.last_direction = 'right'
                 if not self.ball_launched:
                     self.ball.launch()
                     self.ball_launched = True
-
             elif event.key == pg.K_ESCAPE:
                 self.game_stats['lives'] = 0
                 self.done = True
                 self.sounds['game_over'].play()
-
-            elif event.key == pg.K_b:  # Break all bricks instantly
+            elif event.key == pg.K_b:  # Cheat key
                 bricks_remaining = len(self.brick_wall)
-                self.game_stats['score'] += 100 * bricks_remaining  # award the score!
+                self.game_stats['score'] += 100 * bricks_remaining
                 self.brick_wall.empty()
                 self.won = True
                 self.done = True
                 self.sounds['win'].play()
-
         elif event.type == pg.KEYUP:
             if (event.key == pg.K_LEFT and self.last_direction == 'left') or \
                     (event.key == pg.K_RIGHT and self.last_direction == 'right'):
                 self.last_direction = None
 
     def update(self, screen, dt):
-        """
-        Update game state and handle rendering.
+        """Update game state."""
+        # Handle collisions
+        self._handle_collisions()
 
-        Args:
-            screen (pygame.Surface): The surface to draw on.
-            dt (float): Delta time since last frame (unused in current implementation).
-
-        Currently delegates all drawing to the draw() method but could be extended to:
-        - Handle game logic updates
-        - Process AI movements
-        - Manage game timers
-        """
-
-        # Check for collision with bricks
-        hit_bricks = pg.sprite.spritecollide(self.ball, self.brick_wall, dokill=False)
-
-        if hit_bricks:
-            # Only bounce once per collision pass
-            self.ball.dy *= -1
-
-            for brick in hit_bricks:
-                # Spawn particles
-                for _ in range(8):
-                    particle = Debris(brick.rect.center, brick.color)
-                    self.particles.add(particle)
-
-                # Remove brick
-                self.brick_wall.remove(brick)
-                self.all_sprites.remove(brick)
-
-                self.game_stats['score'] += 100
-
-            self.sounds['brick'].play()
-
-        # Ball–Paddle collision
-        if pg.sprite.collide_rect(self.ball, self.paddle):
-            self.ball.dy *= -1  # Bounce upward
-            self.sounds['paddle'].play()
-
-            # Add horizontal change based on where the ball hit the paddle
-            offset = (self.ball.rect.centerx - self.paddle.rect.centerx) / (self.paddle.rect.width / 2)
-            self.ball.dx += offset * 2  # tweak the multiplier for more/less curve
-
-            # Cap the max horizontal speed
-            max_speed = self.ball.speed
-            self.ball.dx = max(-max_speed, min(self.ball.dx, max_speed))
-
-
+        # Update paddle position
         if self.last_direction == 'left':
             self.paddle.move_left(8)
         elif self.last_direction == 'right':
             self.paddle.move_right(8)
 
+        # Update game objects if game is still running
         if not self.done:
             self.ball.update()
+            self.particles.update()
 
-        # animation
-        self.particles.update()
+            # Check for ball loss
+            if self.ball.rect.bottom >= WINDOW_HEIGHT:
+                self._handle_ball_loss()
 
-        if self.ball.rect.bottom >= WINDOW_HEIGHT:
-            self.game_stats['lives'] -= 1
-            print("Ball lost! Lives left:", self.game_stats['lives'])
-            self.sounds['life_lost'].play()
+            # Check for win condition
+            if len(self.brick_wall) == 0 and not self.done:
+                self.won = True
+                self.done = True
+                self.sounds['win'].play()
 
-            if self.game_stats['lives'] <= 0:
-                self.done = True  # Go to end screen
-                self.sounds['game_over'].play()
-            else:
-                self.reset_ball_and_paddle()
-
-        # If all bricks are gone, mark win and stop the game
-        if len(self.brick_wall) == 0 and not self.done:
-            self.won = True
-            self.done = True
-            self.sounds['win'].play()
-
+        # Draw everything
         self.draw(screen)
 
+    def _handle_collisions(self):
+        """Handle all collision detection and response."""
+        # Brick collisions
+        hit_bricks = pg.sprite.spritecollide(self.ball, self.brick_wall, False)
+        if hit_bricks:
+            self.ball.dy *= -1  # Bounce
+            for brick in hit_bricks:
+                # Create particles
+                for _ in range(8):
+                    particle = Debris(brick.rect.center, brick.color)
+                    self.particles.add(particle)
+                # Remove brick and update score
+                self.brick_wall.remove(brick)
+                self.all_sprites.remove(brick)
+                self.game_stats['score'] += 100
+            self.sounds['brick'].play()
 
+        # Paddle collision
+        if pg.sprite.collide_rect(self.ball, self.paddle):
+            self.ball.dy *= -1
+            self.sounds['paddle'].play()
+            # Add directional influence based on where ball hits paddle
+            offset = (self.ball.rect.centerx - self.paddle.rect.centerx) / (self.paddle.rect.width / 2)
+            self.ball.dx += offset * 2
+            # Cap speed
+            max_speed = self.ball.speed
+            self.ball.dx = max(-max_speed, min(self.ball.dx, max_speed))
 
-    def draw(self, screen):
-        """
-        Render all game elements to the screen.
+    def _handle_ball_loss(self):
+        """Handle logic when ball is lost."""
+        self.game_stats['lives'] -= 1
+        self.sounds['life_lost'].play()
 
-        Args:
-            screen (pygame.Surface): The surface to draw on.
+        if self.game_stats['lives'] <= 0:
+            self.done = True
+            self.sounds['game_over'].play()
+        else:
+            self._reset_ball_and_paddle()
 
-        Draws:
-        - Gray background
-        - Title text ("Game Screen") centered
-        - Instructions text ("Press anything to exit...") below title
-        """
-        screen.blit(self.background, (0, 0))
-        pg.draw.rect(screen, GRAY, (0, 0, WINDOW_WIDTH, 50))
-
-        # Top wall
-        pg.draw.rect(screen, GRAY, (0, 0, WINDOW_WIDTH, 50))
-
-        # Left wall
-        pg.draw.rect(screen, GRAY, (0, 0, wall_width, WINDOW_HEIGHT))
-
-        # Right wall
-        pg.draw.rect(screen, GRAY, (WINDOW_WIDTH - wall_width, 0, wall_width, WINDOW_HEIGHT))
-
-        # Draw bricks
-        self.all_sprites.draw(screen)
-
-        # animation
-        self.particles.draw(screen)
-
-        # Font setup
-        font = pg.font.SysFont(FONT, 30)
-
-        # Render lives (top-left)
-        lives_text = font.render(f"Lives: {self.game_stats['lives']}", True, (0, 0, 0))
-        screen.blit(lives_text, (20, 10))
-
-        # Render score (top-right)
-        score_text = font.render(f"Score: {self.game_stats['score']}", True, (0, 0, 0))
-        score_rect = score_text.get_rect(topright=(WINDOW_WIDTH - 20, 10))
-        screen.blit(score_text, score_rect)
-
-    def reset_ball_and_paddle(self):
-        # Reset paddle position
-        self.paddle.rect.x = (WINDOW_WIDTH - paddle_width) // 2
+    def _reset_ball_and_paddle(self):
+        """Reset ball and paddle to starting positions."""
+        self.paddle.rect.x = (WINDOW_WIDTH - PADDLE_WIDTH) // 2
         self.paddle.rect.y = WINDOW_HEIGHT - 80
-
-        # Reset ball position
         self.ball.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.ball.dx = 0
         self.ball.dy = 0
         self.ball_launched = False
         self.last_direction = None
+
+    def draw(self, screen):
+        """Draw all game elements."""
+        # Draw background and walls
+        screen.blit(self.background, (0, 0))
+        pg.draw.rect(screen, GRAY, (0, 0, WINDOW_WIDTH, 50))  # Top
+        pg.draw.rect(screen, GRAY, (0, 0, WALL_WIDTH, WINDOW_HEIGHT))  # Left
+        pg.draw.rect(screen, GRAY, (WINDOW_WIDTH - WALL_WIDTH, 0, WALL_WIDTH, WINDOW_HEIGHT))  # Right
+
+        # Draw all sprites
+        self.all_sprites.draw(screen)
+        self.particles.draw(screen)
+
+        # Draw HUD
+        font = pg.font.SysFont(FONT, 30)
+        lives_text = font.render(f"Lives: {self.game_stats['lives']}", True, (0, 0, 0))
+        screen.blit(lives_text, (20, 10))
+
+        score_text = font.render(f"Score: {self.game_stats['score']}", True, (0, 0, 0))
+        score_rect = score_text.get_rect(topright=(WINDOW_WIDTH - 20, 10))
+        screen.blit(score_text, score_rect)

@@ -1,5 +1,6 @@
 import pygame as pg
-from constants import FONT, FONT_SIZE, BLACK, GRAY, WHITE
+
+from config import FONT, FONT_SIZE, BLACK, GRAY, WHITE
 
 
 class MenuManager:

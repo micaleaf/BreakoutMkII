@@ -1,5 +1,4 @@
 import json
-import os
 
 """This can serve as the config file that loads the settings.json file.
 It reads all the values and makes sure things like colors,

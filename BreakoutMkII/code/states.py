@@ -1,5 +1,5 @@
+from config import STARTING_LIVES, SETTINGS
 from control import Control
-from constants import STARTING_LIVES, SETTINGS
 
 
 class States(Control):
