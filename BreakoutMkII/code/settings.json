@@ -1,0 +1,19 @@
+{
+  "window": {
+    "width": 1000,
+    "height": 900
+  },
+  "fps": 60,
+  "starting_lives": 3,
+  "font": {
+    "name": "calibri",
+    "size": 50
+  },
+  "colors": {
+    "black": [0, 0, 0],
+    "white": [255, 255, 255],
+    "gray": [200, 200, 200],
+    "green": [0, 255, 0],
+    "cyan": [0, 255, 255]
+  }
+}
