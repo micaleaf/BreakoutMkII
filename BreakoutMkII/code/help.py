@@ -36,7 +36,7 @@ class Help(States, MenuManager):
         self.draw(screen)
 
     def draw(self, screen):
-        screen.fill(WHITE)
+        screen.blit(self.background, (0, 0))
         font = pg.font.SysFont(FONT, FONT_SIZE)
         small_font = pg.font.SysFont(FONT, 28)
 
