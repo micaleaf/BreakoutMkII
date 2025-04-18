@@ -1,3 +1,4 @@
+imoprt os
 import pygame as pg
 
 from config import WHITE, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE
@@ -45,6 +46,7 @@ class End(States, MenuManager):
         self.from_bottom = 200
         self.spacer = LINE_SPACING * 4
         self.won = False
+        self.integer = 3
 
     def cleanup(self):
         """
@@ -70,6 +72,14 @@ class End(States, MenuManager):
         self.persist = persist
         self.score = self.persist.get('score', 0)
         self.won = self.persist.get('won', False)  # Get win status from Game
+        if self.won:
+            self.integer = self.game_stats["lives"]
+            if self.integer == 3:
+                self.score = self.score + 2000
+            elif self.integer == 2:
+                self.score = self.score + 1000
+            else:
+                self.score = self.score + 500
 
     def get_event(self, event):
         """
@@ -122,6 +132,63 @@ class End(States, MenuManager):
         title_text = font.render(title, True, title_color)
         title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 60))
         screen.blit(title_text, title_rect)
+
+        # Calculate Final Score
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        heart_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "heart.gif"))
+        #heart1, heart2, heart3
+        if self.integer == 3 and self.won:
+            try:
+                heart1 = pg.image.load(heart_path).convert()
+                heart1 = pg.transform.scale(screen,(100,100))
+                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
+
+                heart2 = pg.image.load(heart_path).convert()
+                heart2 = pg.transform.scale(screen,(100,100))
+                heart2 = heart2.get_rect(center = (WINDOW_WIDTH / 2, 750))
+
+                heart3 = pg.image.load(heart_path).convert()
+                heart3 = pg.transform.scale(screen,(100,100))
+                heart3 = heart3.get_rect(center = (WINDOW_WIDTH * 3/4, 750))
+            except Exception:
+                print("The heart sprites cannot be found", Exception)
+                heart1.fill((255,0,0));
+                heart2.fill((255,0,0))
+                heart3.fill((255,0,0))
+
+            RewardText = font.render(f"Perfect! 4500 + 2000", True, (0, 255, 0))
+            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600))
+            screen.blit(RewardText, RewardTextSquare)
+        elif self.integer == 2:
+            try:
+                heart1 = pg.image.load(heart_path).convert()
+                heart1 = pg.transform.scale(screen,(100,100))
+                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
+            
+                heart2 = pg.image.load(heart_path).convert()
+                heart2 = pg.transform.scale(screen,(100,100))
+                heart2 = heart2.get_rect(center = (WINDOW_WIDTH / 2, 750))
+            except Exception:
+                print("The heart sprites cannot be found", Exception)
+                heart1.fill((255,0,0));
+                heart2.fill((255,0,0))
+
+            RewardText = font.render(f"Not Bad! 4500 + 1000", True, (0, 255, 0))
+            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600))
+            screen.blit(RewardText, RewardTextSquare)
+        elif self.integer == 1:
+            try:
+                heart1 = pg.image.load(heart_path).convert()
+                heart1 = pg.transform.scale(screen,(100,100))
+                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
+            except Exception:
+                print("The heart sprites cannot be found", Exception)
+                heart1.fill((255,0,0));
+
+            RewardText = font.render(f"You Did it! 4500 + 500", True, (0, 255, 0))
+            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600.0))
+            screen.blit(RewardText, RewardTextSquare)
+
 
         # Show Final Score
         score_text = font.render(f"Final Score: {self.score}", True, (0, 0, 0))
