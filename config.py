@@ -2,8 +2,8 @@ import json
 import os
 
 # Get the directory where config.py is located
-CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
-SETTINGS_PATH = os.path.join(CONFIG_DIR, "settings.json")
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+SETTINGS_PATH = os.path.join(PROJECT_ROOT, "settings.json")
 
 """This serves as the config file that loads the settings.json file.
 It reads all the values and makes sure things like colors,
@@ -34,6 +34,12 @@ WHITE = tuple(CONFIG["colors"]["white"])
 GRAY = tuple(CONFIG["colors"]["gray"])
 GREEN = tuple(CONFIG["colors"]["green"])
 CYAN = tuple(CONFIG["colors"]["cyan"])
+DARKGREEN = tuple(CONFIG["colors"]["darkgreen"])
+
+IMAGE_PATHS = {
+    key: os.path.join(PROJECT_ROOT, path)
+    for key, path in CONFIG.get("images", {}).items()
+}
 
 # SETTINGS for game setup
 SETTINGS = {
