@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from config import LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, BLACK, WHITE
+from config import LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, BLACK, WHITE, IMAGE_PATHS
 from state_manager.menu_manager import MenuManager
 from state_manager.states import States
 
@@ -24,17 +24,15 @@ class Help(States, MenuManager):
         self.next = 'menu'
         # Background Image
 
-        # Background Image on Start Screen
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "../assets/images", "BackGround.jpg"))
-
+        # Load background using centralized path from settings.json
         try:
+            image_path = IMAGE_PATHS["blurred_bg"]
             self.background = pg.image.load(image_path).convert()
             self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
         except Exception as e:
-            print("Background image failed to load:", e)
+            print("Failed to load background image:", e)
             self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-            self.background.fill(WHITE)
+            self.background.fill((WHITE))
 
     def startup(self, persist=None):
         print("Starting Help Screen")
