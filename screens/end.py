@@ -1,7 +1,7 @@
 import os
 import pygame as pg
 
-from config import WHITE, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE
+from config import WHITE, DARKGREEN, GREEN, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE
 from state_manager.menu_manager import MenuManager
 from state_manager.states import States
 
@@ -47,6 +47,16 @@ class End(States, MenuManager):
         self.spacer = LINE_SPACING * 4
         self.won = False
         self.integer = 3
+
+        # Load background using centralized path from settings.json
+        try:
+            image_path = IMAGE_PATHS["blurred_bg"]
+            self.background = pg.image.load(image_path).convert()
+            self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
+        except Exception as e:
+            print("Failed to load background image:", e)
+            self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+            self.background.fill(WHITE)
 
     def cleanup(self):
         """
@@ -120,7 +130,7 @@ class End(States, MenuManager):
 
         # Show "YOU WIN!" or "Game Over"
         title = "YOU WIN!" if self.won else "Game Over"
-        title_color = (0, 200, 0) if self.won else (0, 0, 0)
+        title_color = (DARKGREEN) if self.won else (0, 0, 0)
         title_text = font.render(title, True, title_color)
         title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 60))
         screen.blit(title_text, title_rect)
@@ -140,14 +150,14 @@ class End(States, MenuManager):
                     screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
                     screen.blit(heart_img, (WINDOW_WIDTH // 2 - 25, 700))
                     screen.blit(heart_img, (WINDOW_WIDTH * 3 // 4 - 25, 700))
-                    reward_text = font.render("Perfect! 4500 + 2000", True, (0, 255, 0))
+                    reward_text = font.render("Perfect! 4500 + 2000", True, (GREEN))
                 elif self.integer == 2:
                     screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
                     screen.blit(heart_img, (WINDOW_WIDTH // 2 - 25, 700))
-                    reward_text = font.render("Not Bad! 4500 + 1000", True, (0, 255, 0))
+                    reward_text = font.render("Not Bad! 4500 + 1000", True, (GREEN))
                 elif self.integer == 1:
                     screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
-                    reward_text = font.render("You Did it! 4500 + 500", True, (0, 255, 0))
+                    reward_text = font.render("You Did it! 4500 + 500", True, (GREEN))
 
                 reward_rect = reward_text.get_rect(center=(WINDOW_WIDTH // 2, 600))
                 screen.blit(reward_text, reward_rect)
