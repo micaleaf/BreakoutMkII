@@ -2,7 +2,7 @@ import pygame
 import random
 
 pygame.init()
-from constants import WINDOW_HEIGHT, WINDOW_WIDTH, BLACK, GRAY, WHITE, SETTINGS
+from config import WINDOW_HEIGHT, WINDOW_WIDTH, BLACK, GRAY, WHITE, SETTINGS
 
 
 

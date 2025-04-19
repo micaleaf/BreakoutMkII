@@ -1,7 +1,9 @@
+import os
+
 import pygame as pg
-from menu_manager import MenuManager
-from states import States
-from constants import WHITE, LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, GREEN, BLACK
+from state_manager.menu_manager import MenuManager
+from state_manager.states import States
+from config import WHITE, LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, GREEN, BLACK
 
 class Help(States, MenuManager):
     """
@@ -19,7 +21,10 @@ class Help(States, MenuManager):
         self.pre_render_options()
         self.next = 'menu'
         #Background Image
-        self.background = pg.image.load("../assets/images/blurredBG.png").convert()
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(base_path, "..", "assets", "images", "blurredBG.png")
+        self.background = pg.image.load(image_path).convert()
+
         self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     def startup(self, persist=None):

@@ -2,9 +2,9 @@ import pygame as pg
 import pygame.mixer
 import os
 pg.mixer.init()
-from states import States
-from constants import GRAY, WHITE, FONT, FONT_SIZE, LINE_SPACING, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
-from gameScreen import create_bricks, Brick, Paddle, paddle_width, paddle_height, Ball, Debris
+from state_manager.states import States
+from config import GRAY, WHITE, FONT, FONT_SIZE, LINE_SPACING, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
+from screens.gameScreen import create_bricks, Brick, Paddle, paddle_width, paddle_height, Ball, Debris
 import random
 from power_item import PowerItem, Laser
 
