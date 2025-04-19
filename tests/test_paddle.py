@@ -1,13 +1,20 @@
 import pytest
-from gameScreen import Paddle, paddle_width, paddle_height
-
+import pygame as pg
 from config import WINDOW_WIDTH
+from objects.paddle import Paddle
 
+paddle_width = 100
+paddle_height = 20
+
+"""
+This tests for the Paddle class in objects.paddle.
+Validates paddle positioning and movement logic.
+"""
 
 def test_paddle_initial_position():
     paddle = Paddle((255, 255, 255), paddle_width, paddle_height)
     paddle.rect.x = (WINDOW_WIDTH - paddle_width) // 2
-    paddle.rect.y = 900 - 80  # Set this manually
+    paddle.rect.y = 900 - 80
     assert paddle.rect.y == 900 - 80
 
 
