@@ -114,16 +114,8 @@ class End(States, MenuManager):
     def draw(self, screen):
         """
         Render all End state elements to the screen.
-
-        Args:
-            screen (pygame.Surface): The display surface to draw on.
-
-        Draws:
-        - White background
-        - Menu options (through MenuManager)
         """
         screen.fill(WHITE)
-
         font = pg.font.SysFont(FONT, FONT_SIZE)
 
         # Show "YOU WIN!" or "Game Over"
@@ -135,60 +127,43 @@ class End(States, MenuManager):
 
         # Calculate Final Score
         base_path = os.path.dirname(os.path.abspath(__file__))
-        heart_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "heart.gif"))
-        #heart1, heart2, heart3
-        if self.integer == 3 and self.won:
+        heart_path = os.path.join(base_path, "..", "assets", "images", "heart.gif")
+
+        if self.won:
             try:
-                heart1 = pg.image.load(heart_path).convert()
-                heart1 = pg.transform.scale(screen,(100,100))
-                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
+                # Load and scale heart image
+                heart_img = pg.image.load(heart_path).convert_alpha()
+                heart_img = pg.transform.scale(heart_img, (50, 50))  # Scale to reasonable size
+                heart_img.set_colorkey((255, 255, 255)) # Give White Background
 
-                heart2 = pg.image.load(heart_path).convert()
-                heart2 = pg.transform.scale(screen,(100,100))
-                heart2 = heart2.get_rect(center = (WINDOW_WIDTH / 2, 750))
+                if self.integer == 3:
+                    screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
+                    screen.blit(heart_img, (WINDOW_WIDTH // 2 - 25, 700))
+                    screen.blit(heart_img, (WINDOW_WIDTH * 3 // 4 - 25, 700))
+                    reward_text = font.render("Perfect! 4500 + 2000", True, (0, 255, 0))
+                elif self.integer == 2:
+                    screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
+                    screen.blit(heart_img, (WINDOW_WIDTH // 2 - 25, 700))
+                    reward_text = font.render("Not Bad! 4500 + 1000", True, (0, 255, 0))
+                elif self.integer == 1:
+                    screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
+                    reward_text = font.render("You Did it! 4500 + 500", True, (0, 255, 0))
 
-                heart3 = pg.image.load(heart_path).convert()
-                heart3 = pg.transform.scale(screen,(100,100))
-                heart3 = heart3.get_rect(center = (WINDOW_WIDTH * 3/4, 750))
-            except Exception:
-                print("The heart sprites cannot be found", Exception)
-                heart1.fill((255,0,0));
-                heart2.fill((255,0,0))
-                heart3.fill((255,0,0))
+                reward_rect = reward_text.get_rect(center=(WINDOW_WIDTH // 2, 600))
+                screen.blit(reward_text, reward_rect)
 
-            RewardText = font.render(f"Perfect! 4500 + 2000", True, (0, 255, 0))
-            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600))
-            screen.blit(RewardText, RewardTextSquare)
-        elif self.integer == 2:
-            try:
-                heart1 = pg.image.load(heart_path).convert()
-                heart1 = pg.transform.scale(screen,(100,100))
-                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
-            
-                heart2 = pg.image.load(heart_path).convert()
-                heart2 = pg.transform.scale(screen,(100,100))
-                heart2 = heart2.get_rect(center = (WINDOW_WIDTH / 2, 750))
-            except Exception:
-                print("The heart sprites cannot be found", Exception)
-                heart1.fill((255,0,0));
-                heart2.fill((255,0,0))
-
-            RewardText = font.render(f"Not Bad! 4500 + 1000", True, (0, 255, 0))
-            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600))
-            screen.blit(RewardText, RewardTextSquare)
-        elif self.integer == 1:
-            try:
-                heart1 = pg.image.load(heart_path).convert()
-                heart1 = pg.transform.scale(screen,(100,100))
-                heart1 = heart1.get_rect(center = (WINDOW_WIDTH / 4, 750))
-            except Exception:
-                print("The heart sprites cannot be found", Exception)
-                heart1.fill((255,0,0));
-
-            RewardText = font.render(f"You Did it! 4500 + 500", True, (0, 255, 0))
-            RewardTextSquare = RewardText.get_rect(center = (WINDOW_WIDTH / 2, 600.0))
-            screen.blit(RewardText, RewardTextSquare)
-
+            except Exception as e:
+                print(f"Could not load heart image: {e}")
+                # Fallback: Draw red circles if image fails to load
+                if self.integer == 3:
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH // 4, 725), 25)
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH // 2, 725), 25)
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH * 3 // 4, 725), 25)
+                elif self.integer == 2:
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH // 4, 725), 25)
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH // 2, 725), 25)
+                elif self.integer == 1:
+                    pg.draw.circle(screen, (255, 0, 0), (WINDOW_WIDTH // 4, 725), 25)
 
         # Show Final Score
         score_text = font.render(f"Final Score: {self.score}", True, (0, 0, 0))
