@@ -3,7 +3,7 @@ import random
 
 import pygame as pg
 
-from config import (GRAY, CYAN, WINDOW_WIDTH, WINDOW_HEIGHT,
+from config import (GRAY, CYAN, WHITE, WINDOW_WIDTH, WINDOW_HEIGHT,
                     FONT, STARTING_LIVES, IMAGE_PATHS)
 from objects import *
 from state_manager.menu_manager import MenuManager
