@@ -13,6 +13,9 @@ This is a Python-based Breakout game developed by Group 3 for the Capstone proje
 - Unit testing using pytest
 ---
 
+## Features Implemented in Phase II
+
+---
 ## Unit Testing
 We used pytest to test logic-based components of the game (e.g., paddle movement, ball launch, score/lives updates). Test files are located in the `Code/tests` folder. Run the test suite with:
 'python -m pytest tests/'
