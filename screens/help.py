@@ -1,12 +1,7 @@
-
-import os
-
 import pygame as pg
-
-from config import LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, BLACK, WHITE
-from state_manager.menu_manager import MenuManager
-from state_manager.states import States
-
+from menu_manager import MenuManager
+from states import States
+from constants import WHITE, LINE_SPACING, WINDOW_WIDTH, WINDOW_HEIGHT, FONT, FONT_SIZE, GREEN, BLACK
 
 class Help(States, MenuManager):
     """
@@ -23,19 +18,9 @@ class Help(States, MenuManager):
         self.spacer = LINE_SPACING * 2
         self.pre_render_options()
         self.next = 'menu'
-        # Background Image
-
-        # Background Image on Start Screen
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "../assets/images", "BackGround.jpg"))
-
-        try:
-            self.background = pg.image.load(image_path).convert()
-            self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
-        except Exception as e:
-            print("Background image failed to load:", e)
-            self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-            self.background.fill(WHITE)
+        #Background Image
+        self.background = pg.image.load("../assets/images/blurredBG.png").convert()
+        self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     def startup(self, persist=None):
         print("Starting Help Screen")
@@ -55,7 +40,7 @@ class Help(States, MenuManager):
         font = pg.font.SysFont(FONT, FONT_SIZE)
         small_font = pg.font.SysFont(FONT, 28)
 
-        # Title at Top
+     #  Title at Top
         title_text = font.render("Help", True, BLACK)
         screen.blit(title_text, title_text.get_rect(center=(WINDOW_WIDTH // 2, 80)))
 
@@ -65,63 +50,63 @@ class Help(States, MenuManager):
             "The ball bounces about autonomously",
             "Try to keep it on-screen as long as possible",
             "Break all bricks to win the game (or press B)",
-            "Press Esc return to menu",
-            ""
+            "Press ESC to return to the menu",
+            "Press number keys 1–8 to instantly activate powerups",
+            "If the ball is sticky, press SPACE to fire it straight up"
         ]
 
         # Layout Configuration
         start_y = 150
+        red = [0, 120, 30, 30]
+        blue = [0, 30, 30, 150]
         line_spacing = LINE_SPACING + 15
         text_offset = 20
         text_area_x = 100  # shift text right a little
-        paddle_width = 100
+        text_max_width = WINDOW_WIDTH - 2 * text_area_x
 
-        # Drawing functions for specific lines
-        def draw_paddle_line(y):
-            paddle_height = 15
-            paddle_x = text_area_x
-            paddle_y = y + 5
-            pg.draw.rect(screen, "purple", pg.Rect(paddle_x, paddle_y, paddle_width, paddle_height))
-            return paddle_x + paddle_width + text_offset
-
-        def draw_ball_line(y):
-            pg.draw.circle(screen, (255, 0, 0), (text_area_x + 500, y + 11.5), 10)
-            return text_area_x + text_offset
-
-        def draw_brick_line(y):
-            brick_color = (30, 30, 150)
-            pg.draw.rect(screen, brick_color, pg.Rect(text_area_x, y, 60, 15))
-            return text_area_x + 60 + text_offset
-
-        def draw_esc_line(y):
-            # Simplified color calculation
-            r, g, b = 0, 120, 30  # red color components
-            pg.draw.rect(screen, (r, g, b), pg.Rect(text_area_x, y, 60, 15))
-            return text_area_x + 60 + text_offset
-
-        # Map line indices to their specific drawing functions
-        line_drawers = {
-            0: draw_paddle_line,
-            1: draw_ball_line,
-            3: draw_brick_line,
-            4: draw_esc_line
-        }
-
-        # Default drawing behavior (for lines without special handling)
-        def default_draw(y):
-            return text_area_x + text_offset
-
-        # Draw instructions
+        # Draw instructions 
         for i, line in enumerate(lines):
             y = start_y + i * line_spacing
-            draw_func = line_drawers.get(i, default_draw)
-            text_x = draw_func(y)
+
+            if i == 0:
+                # Draw Paddle to the Left of Instructions
+                paddle_width = 100
+                paddle_height = 15
+                paddle_x = text_area_x
+                paddle_y = y + 5
+                pg.draw.rect(screen, "purple", pg.Rect(paddle_x, paddle_y, paddle_width, paddle_height))
+
+                # Adjust text position to the right of the paddle
+                text_x = paddle_x + paddle_width + text_offset
+            elif i == 1:
+                pg.draw.circle(screen, (255, 0, 0), (text_area_x + 500, y + 11.5), 10)
+                text_x = text_area_x + text_offset
+            elif i == 2:
+                text_x = text_area_x + text_offset
+            elif i == 3:
+                pg.draw.rect(screen, (30, 30, 150), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
+            elif i == 4:
+                blend = (2) / max((4) - 1, 1)
+                r = int(blue[1] + (red[1] - blue[1]) * blend)
+                g = int(blue[2] + (red[2] - blue[2]) * blend)
+                b = int(blue[3] + (red[3] - blue[3]) * blend)
+                pg.draw.rect(screen, (r, g, b), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
+            elif i == 5:
+                pg.draw.rect(screen, (red[1], red[2], 30), pg.Rect(text_area_x, y, 60, 15))
+                text_x = text_area_x + 60 + text_offset
+            else:
+                # Align remaining lines with the same text_x
+                text_x = text_area_x + paddle_width + text_offset
 
             text = small_font.render(line, True, BLACK)
             screen.blit(text, (text_x, y))
 
         # Draw the Back Button 
         self.draw_menu(screen)
+
+
 
     def cleanup(self):
         """
