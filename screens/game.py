@@ -4,7 +4,7 @@ import random
 import pygame as pg
 
 from config import (GRAY, CYAN, WINDOW_WIDTH, WINDOW_HEIGHT,
-                    FONT, STARTING_LIVES)
+                    FONT, STARTING_LIVES, IMAGE_PATHS)
 from objects import *
 from state_manager.menu_manager import MenuManager
 from state_manager.states import States
