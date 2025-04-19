@@ -3,8 +3,8 @@ import os
 import pygame as pg
 
 from config import WHITE, LINE_SPACING, FONT, FONT_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
-from menu_manager import MenuManager
-from states import States
+from state_manager.menu_manager import MenuManager
+from state_manager.states import States
 
 
 class Menu(States, MenuManager):
@@ -14,7 +14,7 @@ class Menu(States, MenuManager):
     This hybrid state combines functionality from both States and MenuManager to:
     - Display the game's main menu options
     - Handle player menu navigation and selection
-    - Manage transitions to other game states
+    - Manage transitions to other game screens
     - Provide visual feedback for menu interactions
 
     Inherits from:
@@ -24,7 +24,7 @@ class Menu(States, MenuManager):
     Attributes:
         Inherits all attributes from both parent classes.
         options (list): Text labels for the menu options ['Play', 'Quit']
-        next_list (list): Target states corresponding to menu options ['game']
+        next_list (list): Target screens corresponding to menu options ['game']
         from_bottom (int): Vertical offset from screen bottom for menu positioning (200px)
         spacer (int): Additional vertical spacing adjustment (LINE_SPACING * 4)
     """
@@ -35,7 +35,7 @@ class Menu(States, MenuManager):
 
         Sets up:
         - Default next state ('game')
-        - Menu option texts and their corresponding target states
+        - Menu option texts and their corresponding target screens
         - Menu visual presentation parameters
         - Calls pre-render for menu items
         """

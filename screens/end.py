@@ -1,9 +1,9 @@
-imoprt os
+import os
 import pygame as pg
 
 from config import WHITE, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE
-from menu_manager import MenuManager
-from states import States
+from state_manager.menu_manager import MenuManager
+from state_manager.states import States
 
 
 class End(States, MenuManager):
@@ -14,7 +14,7 @@ class End(States, MenuManager):
     - Present end-game options to the player
     - Handle navigation and selection of menu items
     - Reset game statistics when leaving the state
-    - Transition to appropriate next states based on player choice
+    - Transition to appropriate next screens based on player choice
 
     Inherits from:
         States: For state machine functionality and game statistics
@@ -34,7 +34,7 @@ class End(States, MenuManager):
 
         Sets up:
         - Default next state ('main menu')
-        - Menu option texts and corresponding target states
+        - Menu option texts and corresponding target screens
         - Menu positioning parameters
         """
         States.__init__(self)

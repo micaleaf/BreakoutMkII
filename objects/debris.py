@@ -1,5 +1,7 @@
-import pygame as pg
 import random
+
+import pygame as pg
+
 
 class Debris(pg.sprite.Sprite):
     def __init__(self, position, color):

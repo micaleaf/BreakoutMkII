@@ -3,10 +3,11 @@ import random
 
 import pygame as pg
 
-from config import (WHITE, GRAY, CYAN, WINDOW_WIDTH, WINDOW_HEIGHT,
+from config import (GRAY, CYAN, WINDOW_WIDTH, WINDOW_HEIGHT,
                     FONT, STARTING_LIVES)
 from objects import *
-from states import States
+from state_manager.menu_manager import MenuManager
+from state_manager.states import States
 
 # Constants
 PADDLE_WIDTH = WINDOW_WIDTH // 5
@@ -58,11 +59,12 @@ def create_bricks(rows, columns):
     return brick_group
 
 
-class Game(States):
+class Game(States, MenuManager):
     """Main game state that handles the breakout gameplay."""
 
     def __init__(self):
         States.__init__(self)
+        MenuManager.__init__(self)
         self.next = 'end'
         self.game_stats['lives'] = STARTING_LIVES
         self.game_stats['score'] = 0
@@ -72,7 +74,11 @@ class Game(States):
         self.persist = {}
 
         # Load background
-        self.background = self._load_background()
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.abspath(os.path.join(base_path, "../assets/images", "BG.jpg"))
+        self.background = pg.image.load(image_path).convert()
+        self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
+        pg.mixer.init()
 
         # Initialize sounds and sprites in startup()
         self.sounds = None
@@ -82,22 +88,8 @@ class Game(States):
         self.ball = None
         self.paddle = None
 
-    def _load_background(self):
-        """Load and scale the background image."""
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_path, "..", "assets", "images", "BackGround.jpg")
-
-        try:
-            background = pg.image.load(image_path).convert()
-            return pg.transform.scale(background, (WINDOW_WIDTH, WINDOW_HEIGHT))
-        except Exception as e:
-            print("Background image failed to load:", e)
-            background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-            background.fill(WHITE)
-            return background
-
     def cleanup(self):
-        """Prepare data to persist between states."""
+        """Prepare data to persist between screens."""
         print("Cleaning up Game state")
         self.persist['score'] = self.game_stats['score']
         self.persist['won'] = self.won
@@ -133,15 +125,15 @@ class Game(States):
     def _load_sounds(self):
         """Load all game sounds."""
         base_path = os.path.dirname(os.path.abspath(__file__))
-        sound_path = lambda name: os.path.join(base_path, "..", "assets", "sounds", name)
+        sound_path = os.path.join(base_path, "..", "assets", "sounds")
 
         self.sounds = {
-            'brick': pg.mixer.Sound(sound_path("hit_brick.wav")),
-            'paddle': pg.mixer.Sound(sound_path("hit_paddle.wav")),
-            'life_lost': pg.mixer.Sound(sound_path("lose_life.wav")),
-            'game_over': pg.mixer.Sound(sound_path("game_over.wav")),
-            'win': pg.mixer.Sound(sound_path("win.wav")),
-            'wall': pg.mixer.Sound(sound_path("wall.wav")),
+            'brick': pg.mixer.Sound(os.path.join(sound_path, "hit_brick.wav")),
+            'paddle': pg.mixer.Sound(os.path.join(sound_path, "hit_paddle.wav")),
+            'life_lost': pg.mixer.Sound(os.path.join(sound_path, "lose_life.wav")),
+            'game_over': pg.mixer.Sound(os.path.join(sound_path, "game_over.wav")),
+            'win': pg.mixer.Sound(os.path.join(sound_path, "win.wav")),
+            'wall': pg.mixer.Sound(os.path.join(sound_path, "wall.wav")),
         }
 
     def get_event(self, event):

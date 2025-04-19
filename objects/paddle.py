@@ -1,6 +1,9 @@
 import pygame as pg
-from BreakoutMkII.code.config import WINDOW_WIDTH
-from BreakoutMkII.code.game import WALL_WIDTH
+
+from config import WINDOW_WIDTH
+
+WALL_WIDTH = 16
+
 
 class Paddle(pg.sprite.Sprite):
     def __init__(self, color, width, height):

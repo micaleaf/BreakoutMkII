@@ -1,4 +1,6 @@
 import pygame as pg
+
+
 class Brick(pg.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()

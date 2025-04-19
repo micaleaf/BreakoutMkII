@@ -1,6 +1,7 @@
 import pytest
-from config import WINDOW_WIDTH
 from gameScreen import Paddle, paddle_width, paddle_height
+
+from config import WINDOW_WIDTH
 
 
 def test_paddle_initial_position():

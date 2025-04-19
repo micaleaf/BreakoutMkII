@@ -1,7 +1,10 @@
 import pygame as pg
 
 from config import FONT, FONT_SIZE, BLACK, GRAY, WHITE
-
+"""
+State Control is based on a design by metulburr from the Python forum:
+    https://python-forum.io/thread-336-post-64464.html#pid64464
+"""
 
 class MenuManager:
     """

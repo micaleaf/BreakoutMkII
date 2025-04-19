@@ -1,11 +1,15 @@
 import json
+import os
 
-"""This can serve as the config file that loads the settings.json file.
+# Get the directory where config.py is located
+CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+SETTINGS_PATH = os.path.join(CONFIG_DIR, "settings.json")
+
+"""This serves as the config file that loads the settings.json file.
 It reads all the values and makes sure things like colors,
-window size, and fonts are ready to use throughout the game. This way the JSON file loads 
-in one place instead of importing it to each .py file"""
-# Load settings.json file 
-with open("settings.json", "r") as f:
+window size, and fonts are ready to use throughout the game."""
+# Load settings.json file
+with open(SETTINGS_PATH, "r") as f:
     CONFIG = json.load(f)
 
 # Window Settings
@@ -21,18 +25,17 @@ FONT = CONFIG["font"]["name"]
 FONT_SIZE = CONFIG["font"]["size"]
 LINE_SPACING = int(FONT_SIZE / 2)
 
-"""Convering the color list to tuple because the JSON file
+"""Converting the color list to tuple because the JSON file
 has the colors stored as a list. This makes the color values immutable,
-this way the colors cannot be changed in the code and this ensures theres
-constant color definitions"""
-# Colors (convert list to tuple) 
+ensuring constant color definitions throughout the game."""
+# Colors (convert list to tuple)
 BLACK = tuple(CONFIG["colors"]["black"])
 WHITE = tuple(CONFIG["colors"]["white"])
 GRAY = tuple(CONFIG["colors"]["gray"])
 GREEN = tuple(CONFIG["colors"]["green"])
 CYAN = tuple(CONFIG["colors"]["cyan"])
 
-# SETTINGS for game setup 
+# SETTINGS for game setup
 SETTINGS = {
     'SIZE': (WINDOW_WIDTH, WINDOW_HEIGHT),
     'FPS': FPS

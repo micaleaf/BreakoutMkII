@@ -1,17 +1,20 @@
 from config import STARTING_LIVES, SETTINGS
-from control import Control
-
+from .control import Control
+"""
+State Control is based on a design by metulburr from the Python forum:
+    https://python-forum.io/thread-336-post-64464.html#pid64464
+"""
 
 class States(Control):
     """
-    Base class for game states, inheriting from Control to provide state management functionality.
+    Base class for game screens, inheriting from Control to provide state management functionality.
 
-    This class serves as the foundation for all game states in a finite state machine system.
+    This class serves as the foundation for all game screens in a finite state machine system.
     It maintains common game statistics and state transition flags that are shared across
-    all game states.
+    all game screens.
 
     Attributes:
-        game_stats (dict): Dictionary tracking persistent game statistics across states.
+        game_stats (dict): Dictionary tracking persistent game statistics across screens.
             Contains:
                 - 'lives': Number of remaining player lives
                 - 'score': Current player score
@@ -21,7 +24,7 @@ class States(Control):
         previous (str): Name of the previous state (for return navigation).
     """
 
-    # Class-level game statistics shared across all states
+    # Class-level game statistics shared across all screens
     game_stats = {
         'lives': STARTING_LIVES,
         'score': 0

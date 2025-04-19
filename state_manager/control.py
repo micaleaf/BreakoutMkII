@@ -1,12 +1,15 @@
 import pygame as pg
-
+"""
+State Control is based on a design by metulburr from the Python forum:
+    https://python-forum.io/thread-336-post-64464.html#pid64464
+"""
 
 class Control:
     """
-    A finite state machine for managing game states and controlling the main game loop.
+    A finite state machine for managing game screens and controlling the main game loop.
 
     This class handles initialization of the game window, state management, event processing,
-    and the main game loop. It allows for switching between different game states
+    and the main game loop. It allows for switching between different game screens
     (like menu, gameplay, pause screens) cleanly.
 
     Attributes:
@@ -37,7 +40,7 @@ class Control:
 
     def setup_states(self, state_dict, start_state):
         """
-        Set up the game states and initialize the starting state.
+        Set up the game screens and initialize the starting state.
 
         Args:
             state_dict (dict): Dictionary mapping state names to state instances.

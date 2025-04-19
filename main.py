@@ -1,16 +1,14 @@
+"""
+Main module for the game application.
+
+This module initializes and runs the game using a finite state machine pattern.
+It handles pygame initialization, screen setup, and the main game loop.
+"""
+
 import pygame as pg
-
 from config import SETTINGS
-from control import Control
-from end import End
-from game import Game
-from help import Help
-from menu import Menu
-
-"""
-State Control is based on a design by metulburr from the Python forum:
-    https://python-forum.io/thread-336-post-64464.html#pid64464
-"""
+from screens import Menu, Game, End, Help  # explicit imports instead of wildcard
+from state_manager.control import Control
 
 
 def main():
@@ -21,33 +19,34 @@ def main():
     Responsibilities include:
     - Initializing pygame
     - Creating the main Control instance
-    - Setting up game states
+    - Setting up game screens
     - Starting the main game loop
     - Properly quitting pygame on exit
 
-    The state machine consists of three states:
+    The state machine consists of three screens:
     - menu: The main menu interface
     - game: The core gameplay state
     - end: The game over/end screen state
-    - help:
+    - help: The help screen
 
     Usage:
         Called automatically when the script is run directly.
     """
     pg.init()  # Initialize all pygame modules
+    pg.mixer.init()
 
     # Create the main game controller with specified settings
     app = Control(SETTINGS)
 
     # Dictionary mapping state names to state instances
     state_dict = {
-        'menu': Menu(),  # Main menu state
-        'game': Game(),  # Gameplay state
-        'end': End(),  # End game state
+        'menu': Menu(),
+        'game': Game(),
+        'end': End(),
         'help': Help()
     }
 
-    # Configure the state machine with available states and starting point
+    # Configure the state machine with available screens and starting point
     app.setup_states(state_dict, 'menu')
 
     # Start the main game loop (blocks until game exits)
@@ -58,8 +57,4 @@ def main():
 
 
 if __name__ == "__main__":
-    """
-    Entry point when script is run directly.
-    Calls the main() function to start the game.
-    """
     main()

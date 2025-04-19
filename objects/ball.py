@@ -1,7 +1,12 @@
-import pygame as pg
 import random
-from BreakoutMkII.code.config import WINDOW_WIDTH, WINDOW_HEIGHT
-from BreakoutMkII.code.game import WALL_WIDTH
+
+import pygame as pg
+
+from config import WINDOW_WIDTH, WINDOW_HEIGHT
+
+WALL_WIDTH = 16
+
+
 class Ball(pg.sprite.Sprite):
     def __init__(self, color, radius, speed, sounds=None):
         super().__init__()
