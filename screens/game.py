@@ -74,11 +74,14 @@ class Game(States, MenuManager):
         self.persist = {}
 
         # Load background
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "../assets/images", "BG.jpg"))
-        self.background = pg.image.load(image_path).convert()
-        self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
-        pg.mixer.init()
+        try:
+            image_path = IMAGE_PATHS["main_bg"]
+            self.background = pg.image.load(image_path).convert()
+            self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
+        except Exception as e:
+            print("Failed to load background image:", e)
+            self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+            self.background.fill((WHITE))
 
         # Initialize sounds and sprites in startup()
         self.sounds = None
