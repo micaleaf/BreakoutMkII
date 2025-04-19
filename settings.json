@@ -34,6 +34,16 @@
       0,
       255,
       255
+    ],
+    "darkgreen": [
+      0,
+      200,
+      0
     ]
+  },
+  "images": {
+    "blurred_bg": "assets/images/blurredBG.png",
+    "heart": "assets/images/heart.gif",
+    "main_bg": "assets/images/BG.jpg"
   }
 }
