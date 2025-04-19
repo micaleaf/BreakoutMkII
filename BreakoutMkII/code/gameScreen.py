@@ -4,6 +4,8 @@ import random
 pygame.init()
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, BLACK, GRAY, WHITE, SETTINGS
 
+
+
 window_size = (WINDOW_WIDTH, WINDOW_HEIGHT)
 
 screen = pygame.display.set_mode(window_size)
@@ -19,6 +21,8 @@ paddle_height = WINDOW_HEIGHT / 45
 
 all_sprites_list = pygame.sprite.Group()
 
+
+
 brick_width = 60
 brick_height = 15
 x_gap = 10
@@ -26,23 +30,44 @@ y_gap = 5
 wall_width = 16
 # Paddle
 
-class Paddle(pygame.sprite.Sprite):
 
+class Paddle(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()
         self.image = pygame.Surface([width, height])
-        pygame.draw.rect(self.image, color, [0,0, width, height])
+        self.image.fill(color)
         self.rect = self.image.get_rect()
-
-    def move_right(self, pixels):
-        self.rect.x += pixels
-        if self.rect.x > int(WINDOW_WIDTH - wall_width - paddle_width):
-            self.rect.x = int(WINDOW_WIDTH - wall_width - paddle_width)
+        self.slow = False
+        self.reverse = False
 
     def move_left(self, pixels):
+        if getattr(self, 'reverse', False):
+            pixels = -pixels
+        if getattr(self, 'slow', False):
+            pixels = pixels // 2
         self.rect.x -= pixels
-        if self.rect.x < wall_width:
-            self.rect.x = wall_width
+        if self.rect.left < wall_width:
+            self.rect.left = wall_width
+        if self.rect.right > WINDOW_WIDTH - wall_width:
+            self.rect.right = WINDOW_WIDTH - wall_width
+
+    def move_right(self, pixels):
+        if getattr(self, 'reverse', False):
+            pixels = -pixels
+        if getattr(self, 'slow', False):
+            pixels = pixels // 2
+        self.rect.x += pixels
+        if self.rect.left < wall_width:
+            self.rect.left = wall_width
+        if self.rect.right > WINDOW_WIDTH - wall_width:
+            self.rect.right = WINDOW_WIDTH - wall_width
+
+    def reset_size(self):
+        self.image = pygame.Surface((self.original_width, self.rect.height))
+        self.image.fill((0, 255, 255))
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+
 paddle = Paddle(CYAN, paddle_width, paddle_height)
 paddle.rect.x = int((WINDOW_WIDTH - paddle_width) / 2)
 paddle.rect.y = WINDOW_HEIGHT - 80
@@ -98,7 +123,6 @@ def create_bricks(rows, columns):
 
 # Create bricks (5 rows, 9 columns fits better)
 brick_wall = create_bricks(5, 9)
-all_sprites_list.add(paddle)
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, color, radius, speed, sounds=None):
@@ -109,6 +133,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
         self.speed = speed
+        self.original_speed = speed
         self.dx = 0
         self.dy = 0
         self.sounds = sounds
@@ -122,13 +147,18 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x += self.dx
         self.rect.y += self.dy
 
+        # Side walls Collison
         if self.rect.left <= wall_width or self.rect.right >= WINDOW_WIDTH - wall_width:
             self.dx *= -1
-            self.sounds['wall'].play()
+            if self.sounds and 'wall' in self.sounds:
+                self.sounds['wall'].play()
 
+        # Top Wall Collision
         if self.rect.top <= 50:
             self.dy *= -1
-            self.sounds['wall'].play()
+            if self.sounds and 'wall' in self.sounds:
+                self.sounds['wall'].play()
+
 
 class Debris(pygame.sprite.Sprite):
     def __init__(self, position, color):
@@ -171,8 +201,7 @@ def main():
         all_sprites_list.draw(screen)
         pygame.display.update()
 
+
+
     pygame.quit()
 
-
-if __name__ == "__main__":
-    main()

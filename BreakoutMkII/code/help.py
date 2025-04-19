@@ -50,11 +50,12 @@ class Help(States, MenuManager):
             "The ball bounces about autonomously",
             "Try to keep it on-screen as long as possible",
             "Break all bricks to win the game (or press B)",
-            "Press Esc return to menu",
-            ""
+            "Press ESC to return to the menu",
+            "Press number keys 1–8 to instantly activate powerups",
+            "If the ball is sticky, press SPACE to fire it straight up"
         ]
 
-        # Layout Configuration 
+        # Layout Configuration
         start_y = 150
         red = [0, 120, 30, 30]
         blue = [0, 30, 30, 150]
