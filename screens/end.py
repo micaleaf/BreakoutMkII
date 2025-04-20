@@ -1,7 +1,7 @@
 import os
 import pygame as pg
 
-from config import WHITE, DARKGREEN, GREEN, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH, FONT, FONT_SIZE, IMAGE_PATHS
+from config import WHITE, DARKGREEN, GREEN, LINE_SPACING, STARTING_LIVES, WINDOW_WIDTH,WINDOW_HEIGHT, FONT, FONT_SIZE, IMAGE_PATHS
 from state_manager.menu_manager import MenuManager
 from state_manager.states import States
 
