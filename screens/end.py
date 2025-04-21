@@ -125,7 +125,7 @@ class End(States, MenuManager):
         """
         Render all End state elements to the screen.
         """
-        screen.fill(WHITE)
+        screen.blit(self.background, (0, 0)) #This loads the background image please dont make the screen fill as white
         font = pg.font.SysFont(FONT, FONT_SIZE)
 
         # Show "YOU WIN!" or "Game Over"
