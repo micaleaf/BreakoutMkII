@@ -62,6 +62,8 @@ class Help(States, MenuManager):
             "The ball bounces about autonomously",
             "Try to keep it on-screen as long as possible",
             "Break all bricks to win the game (or press B)",
+            "Power-Ups come in all shapes and sizes!",
+            "Catch one with your paddle, and see what happens!",
             "Press Esc return to menu",
             ""
         ]
