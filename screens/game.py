@@ -2,7 +2,7 @@ import pygame as pg
 import os
 pg.mixer.init()
 from state_manager.states import States
-from config import GRAY, WHITE, FONT, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
+from config import GRAY, WHITE, FONT, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH, IMAGE_PATHS
 from screens.gameScreen import create_bricks, Paddle, paddle_width, paddle_height, Ball, Debris
 import random
 from objects.power_item import PowerItem, Laser
@@ -29,16 +29,15 @@ class Game(States):
         self.power_items = pg.sprite.Group()
         self.particles = pg.sprite.Group()
 
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "BG.jpg"))
+        # Load background from JSON File
         try:
-            print("Loading game background image from:", image_path)
+            image_path = IMAGE_PATHS["main_bg"]
             self.background = pg.image.load(image_path).convert()
             self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
         except Exception as e:
-            print("Game background image failed to load:", e)
+            print("Failed to load background image:", e)
             self.background = pg.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-            self.background.fill(WHITE)
+            self.background.fill((WHITE))
 
     def cleanup(self):
         print("Cleaning Up Game")
