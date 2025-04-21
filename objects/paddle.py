@@ -3,7 +3,6 @@ import pygame as pg
 from config import WINDOW_WIDTH
 
 WALL_WIDTH = WINDOW_WIDTH / 50
-
 class Paddle(pg.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()
@@ -18,6 +17,7 @@ class Paddle(pg.sprite.Sprite):
     def reset_size(self):
         self.image = pg.Surface((self.original_width, self.rect.height))
         self.rect = self.image.get_rect(center=self.rect.center)
+        ## Reset Color
         self.image.fill(self.original_color)
 
     def move_left(self, pixels):
