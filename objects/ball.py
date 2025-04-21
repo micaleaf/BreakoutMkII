@@ -4,12 +4,13 @@ import pygame as pg
 
 from config import WINDOW_WIDTH, WINDOW_HEIGHT
 
-WALL_WIDTH = 16
-
+WALL_WIDTH = WINDOW_WIDTH / 50
 
 class Ball(pg.sprite.Sprite):
-    def __init__(self, color, radius, speed, sounds=None):
+    def __init__(self, color, radius, speed, sounds):
         super().__init__()
+        self.original_speed = speed
+        self.sticky = False
         self.image = pg.Surface((radius * 2, radius * 2), pg.SRCALPHA)
         pg.draw.circle(self.image, color, (radius, radius), radius)
         self.rect = self.image.get_rect()
@@ -37,3 +38,6 @@ class Ball(pg.sprite.Sprite):
             self.dy *= -1
             if self.sounds:
                 self.sounds['wall'].play()
+    def reset_speed(self):
+        self.dx = self.original_speed * (abs(self.dx)/self.dx if self.dx != 0 else 1)
+        self.dy = self.original_speed * (abs(self.dy)/self.dy if self.dy != 0 else 1)
