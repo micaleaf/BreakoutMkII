@@ -1,12 +1,11 @@
 import pygame as pg
-import pygame.mixer
 import os
 pg.mixer.init()
 from state_manager.states import States
-from config import GRAY, WHITE, FONT, FONT_SIZE, LINE_SPACING, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
-from screens.gameScreen import create_bricks, Brick, Paddle, paddle_width, paddle_height, Ball, Debris
+from config import GRAY, WHITE, FONT, STARTING_LIVES, WINDOW_HEIGHT, WINDOW_WIDTH
+from screens.gameScreen import create_bricks, Paddle, paddle_width, paddle_height, Ball, Debris
 import random
-from power_item import PowerItem, Laser
+from objects.power_item import PowerItem, Laser
 
 wall_width = 16
 
@@ -31,7 +30,7 @@ class Game(States):
         self.particles = pg.sprite.Group()
 
         base_path = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "BackGround.jpg"))
+        image_path = os.path.abspath(os.path.join(base_path, "..", "assets/images", "BG.jpg"))
         try:
             print("Loading game background image from:", image_path)
             self.background = pg.image.load(image_path).convert()
@@ -331,10 +330,15 @@ class Game(States):
         self.ball_launched = False
         self.last_direction = None
 
-
     def apply_effect_directly(self, effect):
         now = pg.time.get_ticks()
+        MAX_ACTIVE_EFFECTS = 3
 
+        if len(self.active_effects) >= MAX_ACTIVE_EFFECTS:
+            print(f"Cannot apply '{effect}' — maximum number of effects reached.")
+            return
+
+        # Only apply effect if it's allowed
         if effect == 'expand':
             if not hasattr(self.paddle, "original_width"):
                 self.paddle.original_width = self.paddle.rect.width
@@ -360,13 +364,15 @@ class Game(States):
             self.laser_mode = True
 
         elif effect == 'sticky':
-            self.ball.sticky = True  # You'll need to add logic elsewhere to support this
+            self.ball.sticky = True
 
         elif effect == 'slow_paddle':
-            self.paddle.slow = True  # You can check this flag in move_left/right
+            self.paddle.slow = True
 
         elif effect == 'reverse_controls':
-            self.paddle.reverse = True  # You can use this in movement logic
+            self.paddle.reverse = True
 
         self.active_effects.append((effect, now + 5000))
+
+
 
