@@ -65,7 +65,7 @@ python main.py
 ```
 ---
 
-## Unit Testing
+# Unit Testing
 We used pytest to test logic-based components of the game these include:
 ~Paddle Behavior
  Tests the movement of the paddle with arrow keys and verifies the size changes after power-ups like Expand and Shrink.
@@ -82,7 +82,7 @@ We used pytest to test logic-based components of the game these include:
 ~Power-Ups
 Validates each power-up's effect
 
-# Test Location
+## Test Location
 Test files are located in the `Code/tests` folder. 
 
 ## How To Test 
