@@ -147,6 +147,7 @@ class Game(States, MenuManager):
             'power_up': pg.mixer.Sound(os.path.join(sound_path, "power_up.wav")),
             'power_down': pg.mixer.Sound(os.path.join(sound_path, "power_down.wav")),
             'laser_fire': pg.mixer.Sound(os.path.join(sound_path, "laser_fire.wav")),
+            'sticky': pg.mixer.Sound(os.path.join(sound_path, "sticky.wav")),
         }
 
     def get_event(self, event):
@@ -283,7 +284,12 @@ class Game(States, MenuManager):
           
             # Keep sticky ball attached to paddle before launch
             if getattr(self.ball, 'sticky', False) and not self.ball_launched:
-                self.ball.rect.midbottom = self.paddle.rect.midtop
+                if hasattr(self.ball, "offset_x"):
+                    self.ball.rect.centerx = self.paddle.rect.x + self.ball.offset_x
+                else:
+                    # Default to paddle center if offset doesn't exist
+                    self.ball.rect.centerx = self.paddle.rect.centerx
+                self.ball.rect.bottom = self.paddle.rect.top
 
         # Draw everything
         self.draw(screen)
@@ -390,8 +396,11 @@ class Game(States, MenuManager):
             if getattr(self.ball, 'sticky', False):
                 self.ball.dx = 0
                 self.ball.dy = 0
-                self.ball.rect.midbottom = self.paddle.rect.midtop
+                offset = self.ball.rect.centerx - self.paddle.rect.x
+                self.ball.offset_x = max(0, min(offset, self.paddle.rect.width))
+                self.ball.rect.bottom = self.paddle.rect.top
                 self.ball_launched = False
+                self.sounds['sticky'].play()
             else:
                 self.ball.dy *= -1
                 self.sounds['paddle'].play()
