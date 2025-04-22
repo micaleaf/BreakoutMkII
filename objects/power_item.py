@@ -1,19 +1,20 @@
 import pygame
 
+
 class PowerItem(pygame.sprite.Sprite):
     def __init__(self, x, y, effect_type, speed=3):
         super().__init__()
         self.effect_type = effect_type
         self.image = pygame.Surface((20, 20))
-        # Green/yellowish for power-ups, red for power-downs
         if effect_type in ['laser', 'expand', 'sticky', 'extra_life']:
-            self.image.fill((0, 255, 0))  # Green
+            self.image.fill((0, 255, 0))
         else:
-            self.image.fill((255, 0, 0))  # Red
+            self.image.fill((255, 0, 0))
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = speed
 
-    def move(self):
+    def update(self):
+        """Standard sprite update method that makes the item fall"""
         self.rect.y += self.speed
 
     def apply_effect(self, paddle, ball, game=None):
