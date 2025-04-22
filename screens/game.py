@@ -281,6 +281,7 @@ class Game(States, MenuManager):
 
     def _update_lasers(self):
         """Handle laser firing and updates."""
+        # Fire new lasers if in laser mode
         if self.laser_mode:
             now = pg.time.get_ticks()
             if now - self.last_laser_time >= self.laser_cooldown:
@@ -291,16 +292,24 @@ class Game(States, MenuManager):
                 self.last_laser_time = now
                 self.sounds['laser_fire'].play()
 
-        # Update and check laser collisions
-        for laser in self.lasers:
-            hit_bricks = pg.sprite.spritecollide(laser, self.brick_wall, True)
-            if hit_bricks:
-                laser.kill()
-                self.game_stats['score'] += 100 * len(hit_bricks)
-                for brick in hit_bricks:
-                    for _ in range(8):
-                        self.particles.add(Debris(brick.rect.center, brick.color))
-                self.sounds['brick'].play()
+        # Update all lasers
+        self.lasers.update()
+
+        # Check for laser-brick collisions
+        hits = pg.sprite.groupcollide(
+            self.lasers,
+            self.brick_wall,
+            True,  # Remove laser on collision
+            True  # Remove brick on collision
+        )
+
+        # Handle collisions
+        for laser, hit_bricks in hits.items():
+            self.game_stats['score'] += 100 * len(hit_bricks)
+            for brick in hit_bricks:
+                for _ in range(8):
+                    self.particles.add(Debris(brick.rect.center, brick.color))
+            self.sounds['brick'].play()
 
     def _update_active_effects(self):
         """Check and remove expired effects."""
