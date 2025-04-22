@@ -177,8 +177,13 @@ class Game(States, MenuManager):
                 self.sounds['win'].play()
             elif event.key == pg.K_SPACE and not self.ball_launched:
                 if getattr(self.ball, "sticky", False):
-                    self.ball.launch()
+                    self.ball.dx = 0
+                    self.ball.dy = -self.ball.speed
+                    self.ball_launched = True
                     self.ball.sticky = False
+                    self.active_effects = [ef for ef in self.active_effects if ef[0] != 'sticky']
+                else:
+                    self.ball.launch()
                     self.ball_launched = True
             elif event.key == pg.K_1:
                 self._apply_effect_directly('expand')
@@ -248,9 +253,14 @@ class Game(States, MenuManager):
         # Update paddle movement with possible reverse controls
         move_speed = 5 if getattr(self.paddle, 'slow', False) else 8
         if self.last_direction == 'left':
-            self.paddle.move_left(move_speed * (-1 if getattr(self.paddle, 'reverse', False) else 1))
+            self.paddle.move_left(move_speed)
         elif self.last_direction == 'right':
-            self.paddle.move_right(move_speed * (-1 if getattr(self.paddle, 'reverse', False) else 1))
+            self.paddle.move_right(move_speed)
+
+        if getattr(self.ball, "sticky", False) and not self.ball_launched:
+            if hasattr(self.ball, "offset_x"):
+                self.ball.rect.centerx = self.paddle.rect.x + self.ball.offset_x
+            self.ball.rect.bottom = self.paddle.rect.top
 
         # Update game objects if game is still running
         if not self.done:
@@ -286,6 +296,7 @@ class Game(States, MenuManager):
                 self.all_sprites.add(left_laser, right_laser)
                 self.last_laser_time = now
                 self.sounds['laser_fire'].play()
+        self.lasers.update()
 
         # Update and check laser collisions
         for laser in self.lasers:
@@ -299,9 +310,10 @@ class Game(States, MenuManager):
                 self.sounds['brick'].play()
 
     def _update_active_effects(self):
-        """Check and remove expired effects."""
         current_time = pg.time.get_ticks()
         for effect, end_time in self.active_effects[:]:
+            if effect == "sticky":
+                continue
             if current_time > end_time:
                 self._remove_effect(effect)
                 self.active_effects.remove((effect, end_time))
@@ -365,7 +377,8 @@ class Game(States, MenuManager):
             if getattr(self.ball, 'sticky', False):
                 self.ball.dx = 0
                 self.ball.dy = 0
-                self.ball.rect.midbottom = self.paddle.rect.midtop
+                self.ball.offset_x = self.ball.rect.centerx - self.paddle.rect.x
+                self.ball.rect.bottom = self.paddle.rect.top
                 self.ball_launched = False
             else:
                 self.ball.dy *= -1

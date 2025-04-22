@@ -13,8 +13,10 @@ class PowerItem(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = speed
 
-    def move(self):
+    def update(self):
         self.rect.y += self.speed
+        if self.rect.top > pygame.display.get_surface().get_height():  # auto-kill when off-screen
+            self.kill()
 
     def apply_effect(self, paddle, ball, game=None):
         if self.effect_type == 'expand':
