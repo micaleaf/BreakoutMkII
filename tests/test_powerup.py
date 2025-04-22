@@ -34,6 +34,7 @@ def dummy_game():
             self.game_stats = {'lives': 2}
             self.laser_mode = False
     return DummyGame()
+    
 #--- Power Effects ---
 """This test ensures that the power effect item falls when the respected bricks are broken."""
 def test_power_item_falls():
