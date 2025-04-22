@@ -2,7 +2,6 @@ import random
 
 import pygame as pg
 
-
 class Debris(pg.sprite.Sprite):
     def __init__(self, position, color):
         super().__init__()
