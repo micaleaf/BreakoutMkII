@@ -39,11 +39,17 @@
       0,
       200,
       0
+    ],
+    "pink": [
+      255,
+      20,
+      147
     ]
   },
   "images": {
     "blurred_bg": "assets/images/blurredBG.png",
     "heart": "assets/images/heart.gif",
-    "main_bg": "assets/images/BG.jpg"
+    "main_bg": "assets/images/BG.jpg",
+    "game_bg": "assets/images/game_bg.jpg"
   }
 }
