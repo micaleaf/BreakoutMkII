@@ -35,6 +35,7 @@ GRAY = tuple(CONFIG["colors"]["gray"])
 GREEN = tuple(CONFIG["colors"]["green"])
 CYAN = tuple(CONFIG["colors"]["cyan"])
 DARKGREEN = tuple(CONFIG["colors"]["darkgreen"])
+PINK = tuple(CONFIG["colors"]["pink"])
 
 IMAGE_PATHS = {
     key: os.path.join(PROJECT_ROOT, path)
