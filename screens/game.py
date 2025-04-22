@@ -313,6 +313,7 @@ class Game(States, MenuManager):
 
     def _update_active_effects(self):
         """Check and remove expired effects."""
+        ## Lasers Fire
         current_time = pg.time.get_ticks()
         for effect, end_time in self.active_effects[:]:
             if current_time > end_time:
