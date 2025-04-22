@@ -34,7 +34,20 @@ def dummy_game():
             self.game_stats = {'lives': 2}
             self.laser_mode = False
     return DummyGame()
+#--- Power Effects ---
+"""This test ensures that the power effect item falls when the respected bricks are broken."""
+def test_power_item_falls():
+    start_y = 100
+    item = PowerItem(50, start_y, 'sticky', speed=5)
 
+    # Call update a few times
+    for _ in range(3):
+        item.update()
+
+    # After 3 updates, y should have increased by 3 * speed
+    expected_y = start_y + (3 * item.speed)
+    assert item.rect.centery == expected_y
+    
 # --- Paddle Size Power-Ups ---
 """This test ensures that the paddle's width increases after the 'expand' power-up is applied."""
 def test_expand_paddle(paddle, ball):
