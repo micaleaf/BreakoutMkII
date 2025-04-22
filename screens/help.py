@@ -64,7 +64,7 @@ class Help(States, MenuManager):
             "Break all bricks to win the game (or press B)",
             "Power-Ups can be caught with the paddle",
             "Power-Ups can be applied by using numbers 1-8",
-            "Press space to fire sticky ball",
+            "Press space to fire sticky ball & lasers",
             "Press Esc return to menu",
             ""
         ]
