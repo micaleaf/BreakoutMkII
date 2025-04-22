@@ -175,11 +175,13 @@ class Game(States, MenuManager):
                 self.won = True
                 self.done = True
                 self.sounds['win'].play()
-            elif event.key == pg.K_SPACE and not self.ball_launched:
-                if getattr(self.ball, "sticky", False):
+            elif event.key == pg.K_SPACE:
+                if not self.ball_launched and getattr(self.ball, "sticky", False):
                     self.ball.launch()
                     self.ball.sticky = False
                     self.ball_launched = True
+                elif self.laser_mode:  # Only fire lasers if in laser mode
+                    self._fire_lasers()  # New method to handle laser firing
             elif event.key == pg.K_1:
                 self._apply_effect_directly('expand')
             elif event.key == pg.K_2:
@@ -279,20 +281,20 @@ class Game(States, MenuManager):
         # Draw everything
         self.draw(screen)
 
+    def _fire_lasers(self):
+        """Fire lasers from paddle when space is pressed in laser mode."""
+        now = pg.time.get_ticks()
+        if now - self.last_laser_time >= self.laser_cooldown:
+            left_laser = Laser(self.paddle.rect.left + 5, self.paddle.rect.top)
+            right_laser = Laser(self.paddle.rect.right - 5, self.paddle.rect.top)
+            self.lasers.add(left_laser, right_laser)
+            self.all_sprites.add(left_laser, right_laser)
+            self.last_laser_time = now
+            self.sounds['laser_fire'].play()
+            
     def _update_lasers(self):
-        """Handle laser firing and updates."""
-        # Fire new lasers if in laser mode
-        if self.laser_mode:
-            now = pg.time.get_ticks()
-            if now - self.last_laser_time >= self.laser_cooldown:
-                left_laser = Laser(self.paddle.rect.left + 5, self.paddle.rect.top)
-                right_laser = Laser(self.paddle.rect.right - 5, self.paddle.rect.top)
-                self.lasers.add(left_laser, right_laser)
-                self.all_sprites.add(left_laser, right_laser)
-                self.last_laser_time = now
-                self.sounds['laser_fire'].play()
-
-        # Update all lasers
+        """Update laser positions and handle collisions."""
+        # Update all lasers (this makes them move upward)
         self.lasers.update()
 
         # Check for laser-brick collisions
