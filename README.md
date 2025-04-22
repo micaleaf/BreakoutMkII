@@ -47,6 +47,7 @@ The following power-ups may randomly drop from destroyed bricks and will activat
 | Extra Life      | Grants the player an additional life                | Click 3  |
 
 *Click 5 to activate laser and click space to launch lasers
+
 Each power-up effect lasts for a limited time before reverting to default settings.
 
 ---
