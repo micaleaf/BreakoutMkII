@@ -1,9 +1,11 @@
 import pytest
 import pygame as pg
+from screens.game import Game
 from objects.paddle import Paddle
 from objects.ball import Ball
+from objects.brick import Brick
 from objects.power_item import PowerItem
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 """
 These tests make sure the power-ups in the game do what they are meant to do.
@@ -48,6 +50,27 @@ def test_power_item_falls():
     # After 3 updates, y should have increased by 3 * speed
     expected_y = start_y + (3 * item.speed)
     assert item.rect.centery == expected_y
+
+"""This test ensures a power-up item spawns when a brick is hit and the random condition is met."""
+def test_powerup_spawns_on_brick_hit():
+    game = Game()
+    game.startup({})
+
+    # Set up a brick and make sure it's positioned to collide with the ball
+    brick = Brick((255, 0, 0), 60, 15)
+    brick.rect.center = (100, 100)
+    game.brick_wall.add(brick)
+    game.all_sprites.add(brick)
+
+    game.ball.rect.center = brick.rect.center  # Force collision
+
+    # Force a power-up to spawn and make sure it's the 'sticky' one
+    with patch('random.random', return_value=0.1):  # Ensure power-up spawns
+        with patch('random.choice', return_value='sticky'):
+            game._handle_collisions()
+
+    # Assert that at least one power-up is in the group
+    assert any(isinstance(sprite, PowerItem) for sprite in game.power_items)
     
 # --- Paddle Size Power-Ups ---
 """This test ensures that the paddle's width increases after the 'expand' power-up is applied."""
