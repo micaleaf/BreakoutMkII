@@ -82,7 +82,7 @@ class Game(States, MenuManager):
 
         # Load background
         try:
-            image_path = IMAGE_PATHS["main_bg"]
+            image_path = IMAGE_PATHS["game_bg"]
             self.background = pg.image.load(image_path).convert()
             self.background = pg.transform.scale(self.background, (WINDOW_WIDTH, WINDOW_HEIGHT))
         except Exception as e:
