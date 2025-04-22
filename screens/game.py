@@ -233,7 +233,7 @@ class Game(States, MenuManager):
             self.laser_mode = True
         elif effect == 'sticky':
             self.ball.sticky = True
-        elif effect == 'slow_paddle':
+        elif effect == 'szlow_paddle':
             self.paddle.slow = True
         elif effect == 'reverse_controls':
             self.paddle.reverse = True
@@ -250,9 +250,14 @@ class Game(States, MenuManager):
         # Update paddle movement with possible reverse controls
         move_speed = 5 if getattr(self.paddle, 'slow', False) else 8
         if self.last_direction == 'left':
-            self.paddle.move_left(move_speed * (-1 if getattr(self.paddle, 'reverse', False) else 1))
+            direction = -1  # Left
         elif self.last_direction == 'right':
-            self.paddle.move_right(move_speed * (-1 if getattr(self.paddle, 'reverse', False) else 1))
+            direction = 1  # Right
+        else:
+            direction = 0  # No movement
+
+        if direction != 0:
+            self.paddle.move(direction, move_speed)
 
         # Update game objects if game is still running
         if not self.done:
