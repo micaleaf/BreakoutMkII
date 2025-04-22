@@ -82,10 +82,17 @@ def test_sticky_ball(paddle, ball):
     assert hasattr(ball, 'sticky') and ball.sticky is True
     assert effect == 'sticky'
 
-# --- Extra Lives ---
+# --- Extra Lives and Laser Power Up ---
 """This test ensures an extra life is added to the game stats when the 'extra_life' power-up is applied."""
 def test_extra_life(paddle, ball, dummy_game):
     power = PowerItem(100, 100, 'extra_life')
     effect = power.apply_effect(paddle=paddle, ball=ball, game=dummy_game)
     assert dummy_game.game_stats['lives'] == 3
     assert effect == 'extra_life'
+
+"""This test ensures the 'laser' power-up sets laser_mode to True in the game."""
+def test_laser_powerup(paddle, ball, dummy_game):
+    power = PowerItem(100, 100, 'laser')
+    effect = power.apply_effect(paddle=paddle, ball=ball, game=dummy_game)
+    assert dummy_game.laser_mode is True
+    assert effect == 'laser'
