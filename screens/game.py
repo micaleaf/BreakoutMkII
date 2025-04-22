@@ -271,6 +271,10 @@ class Game(States, MenuManager):
 
             # Update active effects
             self._update_active_effects()
+          
+            # Keep sticky ball attached to paddle before launch
+            if getattr(self.ball, 'sticky', False) and not self.ball_launched:
+                self.ball.rect.midbottom = self.paddle.rect.midtop
 
         # Draw everything
         self.draw(screen)
