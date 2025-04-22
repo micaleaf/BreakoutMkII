@@ -84,7 +84,7 @@ class End(States, MenuManager):
         self.won = self.persist.get('won', False)  # Get win status from Game
         if self.won:
             self.integer = self.game_stats["lives"]
-            if self.integer == 3:
+            if self.integer >= 3:
                 self.score = self.score + 2000
             elif self.integer == 2:
                 self.score = self.score + 1000
@@ -146,7 +146,7 @@ class End(States, MenuManager):
                 heart_img = pg.transform.scale(heart_img, (50, 50))  # Scale to reasonable size
                 heart_img.set_colorkey((255, 255, 255)) # Give White Background
 
-                if self.integer == 3:
+                if self.integer >= 3:
                     screen.blit(heart_img, (WINDOW_WIDTH // 4 - 25, 700))
                     screen.blit(heart_img, (WINDOW_WIDTH // 2 - 25, 700))
                     screen.blit(heart_img, (WINDOW_WIDTH * 3 // 4 - 25, 700))
