@@ -254,7 +254,7 @@ class Game(States, MenuManager):
         elif self.last_direction == 'right':
             direction = 1  # Right
         else:
-            direction = 0  # No movement
+            direction = 0
 
         if direction != 0:
             self.paddle.move(direction, move_speed)
