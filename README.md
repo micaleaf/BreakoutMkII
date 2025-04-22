@@ -54,17 +54,43 @@ Each power-up effect lasts for a limited time before reverting to default settin
 
 Ensure Python 3.10 or later is installed. Install the Pygame library if not already installed:
 
-```bash
+```
 pip install pygame
 ```
 
 Then launch the game using:
 
-```bash
+```
 python main.py
 ```
 ---
 
 ## Unit Testing
-We used pytest to test logic-based components of the game (e.g., paddle movement, ball launch, score/lives updates). Test files are located in the `Code/tests` folder. Run the test suite with:
-`python -m pytest tests/`
+We used pytest to test logic-based components of the game these include:
+~Paddle Behavior
+ Tests the movement of the paddle with arrow keys and verifies the size changes after power-ups like Expand and Shrink.
+
+~Ball Behavior
+ Confirms the ball launches properly, changes direction when expected, and resets speed correctly after the 'Fast Ball' power-up or when a life is lost.
+
+~Score & Lives 
+ Makes sure the score updates properly when bricks are hit, and that lives decrease or increase correctly during gameplay and power-ups.
+
+~FSM (Finite State Machine)
+ Ensures transitions between game states—like the main menu, game, help, and end screens—work and load properly.
+
+~Power-Ups
+Validates each power-up's effect
+
+# Test Location
+Test files are located in the `Code/tests` folder. 
+
+## How To Test 
+-Ensure Pygame and Pytest are installed both can be installed: 
+```
+pip install pygame pytest
+```
+-From the root of the project directory, run:
+```
+python -m pytest tests/
+```
