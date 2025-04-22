@@ -177,9 +177,11 @@ class Game(States, MenuManager):
                 self.sounds['win'].play()
             elif event.key == pg.K_SPACE:
                 if not self.ball_launched and getattr(self.ball, "sticky", False):
-                    self.ball.launch()
-                    self.ball.sticky = False
+                    self.ball.dx = 0
+                    self.ball.dy = -self.ball.speed
                     self.ball_launched = True
+                    self.ball.sticky = False
+                    self.active_effects = [ef for ef in self.active_effects if ef[0] != 'sticky']
                 elif self.laser_mode:  # Only fire lasers if in laser mode
                     self._fire_lasers()  # New method to handle laser firing
             elif event.key == pg.K_1:
@@ -323,6 +325,8 @@ class Game(States, MenuManager):
         ## Lasers Fire
         current_time = pg.time.get_ticks()
         for effect, end_time in self.active_effects[:]:
+            if effect == "sticky":
+                continue
             if current_time > end_time:
                 self._remove_effect(effect)
                 self.active_effects.remove((effect, end_time))
