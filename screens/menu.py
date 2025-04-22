@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from config import WHITE, LINE_SPACING, FONT, FONT_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, IMAGE_PATHS
+from config import WHITE, PINK, LINE_SPACING, FONT, FONT_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, IMAGE_PATHS
 from state_manager.menu_manager import MenuManager
 from state_manager.states import States
 
@@ -130,7 +130,7 @@ class Menu(States, MenuManager):
         screen.blit(shadow, shadow.get_rect(center=(WINDOW_WIDTH // 2 + 3, 103)))
 
         # Title Text Color and Position
-        title_text = title_font.render("BREAKOUT", True, (255, 100, 0))
+        title_text = title_font.render("BREAKOUT", True, (PINK))
         title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 100))
         screen.blit(title_text, title_text.get_rect(center=(WINDOW_WIDTH // 2, 100)))
         self.draw_menu(screen)
