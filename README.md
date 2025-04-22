@@ -3,7 +3,7 @@ This is a Python-based Breakout game developed by Group 3 for the Capstone proje
 
 ## Group Members
 (1) Micaela Leaf       (2) Julian Kushto
-(3) Stefanie Merceron  (3) Tanner Goodenow
+(3) Stefanie Merceron  (4) Tanner Goodenow
 
 ---
 
