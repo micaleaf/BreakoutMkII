@@ -40,7 +40,7 @@ The following power-ups may randomly drop from destroyed bricks and will activat
 | Expand          | Increases the paddle width by 50 percent            | Click 1  |
 | Shrink          | Decreases the paddle width by 40 percent            | Click 2  |
 | Sticky          | Ball sticks to paddle on contact until re-launched  | Click 6  |
-| Laser           | Paddle fires lasers to destroy bricks               | Click 5  |
+| Laser           | Paddle fires lasers to destroy bricks               | Click 5  | * Click 5 to activate laser and click space to launch lasers
 | Slow Paddle     | Slows down paddle movement                          | Click 7  |
 | Fast Ball       | Increases ball speed significantly                  | Click 4  |
 | Reverse         | Inverts left and right paddle controls              | Click 8  |
